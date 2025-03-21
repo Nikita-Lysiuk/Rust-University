@@ -1,183 +1,140 @@
-
-// Zadanie 1
-fn is_leap_year(year: i32) -> bool {
-    if year % 4 == 0 || year % 400 == 0 && year % 100 != 0 {
-        return true;
-    } else {
-        return false
-    }
-}
-
-// Zadanie 2
-fn days_amount(month: i32, year: i32) -> i32 {
-    if month < 1 || month > 12 {
-        return -1;
+fn liczba_wystapien(napis: &str, znak: &char) -> i32 {
+    let mut count = 0;
+    for a in napis.chars() {
+        if a.eq(znak) {
+            count += 1;
+        }
     }
 
-    let days: [i32; 12] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-    if month == 2 && is_leap_year(year) {
-        return 29;
-    }
-
-    return days[(month - 1) as usize];
+    count
 }
 
-// Zadanie 3
-fn convert_to_f(c: f32) -> f32 {
-    return 32.0 + c * 9.0 / 5.0;
+fn symbol(r: &char) -> i32 {
+    if r.eq(&'I') { 1 }
+    else if r.eq(&'V') { 5 }
+    else if r.eq(&'X') { 10 }
+    else if r.eq(&'L') { 50 }
+    else if r.eq(&'C') { 100 }
+    else if r.eq(&'D') { 500 }
+    else if r.eq(&'M') { 1000 }
+    else { -1 }
 }
 
-// Zadanie 4
-fn convert_to_c(f: f32) -> f32 {
-    return (f - 32.0) * 5.0 / 9.0;
+fn rzymskie(napis: &str) -> i32 {
+    let mut res = 0;
+    let mut i = 0;
+
+    while i < napis.len() {
+        let s1 = symbol(&napis.chars().nth(i).unwrap());
+
+        if i + 1 < napis.len() {
+            let s2 = symbol(&napis.chars().nth(i + 1).unwrap());
+
+            if s1 >= s2 {
+                res = res + s1;
+                i += 1;
+            } else {
+                res = res + s2 - s1;
+                i += 2;
+            }
+        } else {
+            res = res + s1;
+            i += 1;
+        }
+    }    
+
+    res
 }
 
-// zadanie 5
-fn minus_time() {
-    let g1 = 7;
-    let m1 = 16;
-    let s1 = 50;
-
-    let g2 = 6;
-    let m2 = 59;
-    let s2 = 02;
-
-    let conv1 = g1 * 3600 + m1 * 60 + s1;
-    let conv2 = g2 * 3600 + m2 * 60 + s2;
-    let diff = conv1 - conv2;
-    println!("{}:{}:{}", diff / 3600, (diff % 3600) / 60, diff % 60);
+fn co_drugi_znak(napis: &str) -> String {
+    napis.chars().step_by(2).collect()
 }
 
-//Zadanie 6
-fn factorial(n: u32) -> u32 {
-    let mut result: u32 = 1;
-    let mut i = 1;
-    while i != n {
-        result += i * result;
-        i += 1;
-    }
+fn szyfruj(napis: &str, klucz: usize) -> String {
+    let mut result: String = String::new();
+    let part = napis.len() / klucz;
 
-    return result;
-}
-
-fn factorial_loop(n: u32) -> u32 {
-    let mut result: u32 = 1;
-    let mut i = 1;
-    loop {
-        if i == n {
-            break result;
+    for i in 0..part {
+        let mut add_str: String = String::new();
+        for j in 0..klucz {
+            add_str.push(
+                napis.chars().nth(i * klucz + j).unwrap()
+            );
         }
 
-        result += i * result;
-        i += 1;
+        result.push_str(
+            &add_str.chars().rev().collect::<String>()
+        );
     }
+
+
+    result
 }
 
-fn factorial_for(n: u32) -> u32 {
-    let mut result: u32 = 1;
-    for i in 1..n {
-        result += i * result;
+fn wizytowka(imie: &str, nazwisko: &str) -> String {
+    let inicjal = imie.chars().next().unwrap().to_uppercase().to_string();
+    let mut nazwisko = nazwisko.to_lowercase();
+    if let Some(first) = nazwisko.chars().next() {
+        nazwisko.replace_range(0..first.len_utf8(), &first.to_uppercase().to_string());
+    }
+
+    format!("{}. {}", inicjal, nazwisko)
+}
+
+fn na_rzymskie(liczba: i32) -> String {
+    let num = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+    let sym = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"];
+
+    let mut number = liczba;
+    let mut result = String::new();
+
+    for (i, &value) in num.iter().enumerate() {
+        while number >= value {
+            number -= value;
+            result.push_str(sym[i]);
+        }
     }
 
     result
 }
 
-//Zadanie 7
-fn show_digits(number: i32) {
-    let mut n = number;
-    while n > 0 {
-        print!("{} ", n % 10);
-        n /= 10;
-    }
-    println!();
-}
+fn dodaj_pisemnie(a: &str, b: &str) -> String {
+    let mut result = String::new();
+    let mut carry = 0;
 
-//Zadanie 8
-fn sum_of_digits(number: i32) -> i32 {
-    let mut result = 0;
-    let mut n = number;
+    let a_chars: Vec<_> = a.chars().rev().collect();
+    let b_chars: Vec<_> = b.chars().rev().collect();
 
-    while n > 0 {
-        result += n % 10;
-        n  /= 10;
+    let max_len = a_chars.len().max(b_chars.len());
+
+    for i in 0..max_len {
+        let digit_a = a_chars.get(i).and_then(|c| c.to_digit(10)).unwrap_or(0);
+        let digit_b = b_chars.get(i).and_then(|c| c.to_digit(10)).unwrap_or(0);
+
+        let sum = digit_a + digit_b + carry;
+        carry = sum / 10;
+        result.push(char::from_digit(sum % 10, 10).unwrap());
     }
 
-    return result;
-}
-
-//Zadanie 9
-fn pythagorean_triples(number: i32) {
-    let mut a = 1;
-    while a <= number {
-        let mut b = a + 1;
-        while b <= number {
-            let mut c = b + 1;
-            while c * c < a * a + b * b {
-                c += 1;
-            }
-
-            if c * c == a * a + b * b && c <= number {
-                println!("({}, {}, {})", a, b, c);
-            }
-
-            b += 1;
-        }
-
-        a += 1;
+    if carry > 0 {
+        result.push(char::from_digit(carry, 10).unwrap());
     }
-}
 
-fn pythagorean_triples_loop(number: i32) {
-    let mut a = 1;
-    loop {
-        if a > number {
-            break;
-        }
-
-        let mut b = a + 1;
-        loop {
-            if b > number {
-                break;
-            }
-
-            let mut c = b + 1;
-            loop {
-                if c > number {
-                    break;
-                }
-
-                let c_square = a * a + b * b;
-
-                if c * c == c_square {
-                    println!("({}, {}, {})", a, b, c);
-                }
-
-                c += 1;
-            }
-
-            b += 1;
-        }
-
-        a += 1;
-    }
+    result.chars().rev().collect()
 }
 
 fn main() {
-    println!("{}", convert_to_f(30.0));
-    println!("{}", convert_to_c(86.0));
-    println!("{}", convert_to_f(1.0));
-    println!("{}", convert_to_f(30.0));
-    minus_time();
-    println!("{}", factorial(5));
-    println!("{}", factorial_loop(5));
-    println!("{}", factorial_for(5));
-    println!("{}", is_leap_year(2025));
-    println!("{}", days_amount(5, 2025));
-    show_digits(56789);
-    println!("{}", sum_of_digits(16));
-    pythagorean_triples(20);
-    println!("-----------------");
-    pythagorean_triples_loop(20);
+    println!("Liczba wystapien a: {}", liczba_wystapien("kfhkgfjgjfadfdsgdsgdfdfffgdaaaa", &'a'));
+
+    println!("Rome number MCMX {}", rzymskie(&"MCMX"));
+
+    println!("{}", co_drugi_znak(&"napis"));
+
+    println!("{}", szyfruj(&"Aladyn", 2));
+
+    println!("{}", wizytowka("nikita", "LYSIUK"));
+
+    println!("{}", na_rzymskie(3549));
+
+    println!("{}", dodaj_pisemnie("5924729874298749827418582", "6782893629472094209740298"))
 }
-    

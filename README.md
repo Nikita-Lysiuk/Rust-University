@@ -1,18 +1,15 @@
-# My Education Projects in Rust
+# Lesson 4: Strings, Iterators, and `Option<T>`
 
-This repository documents my journey of learning Rust. Each lesson is stored in a separate branch, reflecting my progress and growing expertise.
-
-## 📌 University Course Progress
-
-As part of my university course, I’ll be sharing my path in Rust—from fundamental concepts to more advanced topics. 
-
-## Lesson 1: The Start of the Journey
-The first step into Rust development. In this lesson, I learned:
-- How to install Rust and set up Cargo.
-- The basics of Rust syntax.
-- Core control flow structures: `if`, `while`, and `loop`.
-- My first macros: `println!` and `format!`.
-- The fundamentals of variable creation and management.
-
-This is just the beginning—each lesson will deepen my understanding of Rust and its capabilities. 
-
+This lesson focused on working with strings, iterators, and Rust’s `Option<T>` type. Key topics covered: 
+- Understanding that Rust strings are UTF-8 encoded and can contain variable-sized characters.
+- Using iterators (Iter) to traverse and manipulate strings efficiently.
+- Handling optional values with Option<T> to avoid null-related errors.
+- Implementing various string-related algorithms:
+    - Counting character occurrences.
+    - Converting Roman numerals to integers and vice versa.
+    - Extracting every second character from a string.
+    - Simple encryption by reversing character segments.
+    - Formatting names into a business card style.
+    - Simulating column-wise addition of large numbers as strings.
+    
+This lesson provided a deeper understanding of Rust’s powerful string handling and iteration mechanisms, preparing for more advanced text processing techniques.
