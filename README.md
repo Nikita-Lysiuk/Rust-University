@@ -1,9 +1,9 @@
-# Lesson 2: Functions and Loop Mastery
+# Lesson 3: `mut`, Ownership, and Borrowing
 
-In this lesson, I deepened my understanding of Rust by exploring functions and refining my control flow skills. Key topics covered:
-- Writing and calling functions, understanding parameters and return values.
-- Improving logic with while loops.
-- Introducing for loops for more structured iteration.
-- Writing cleaner, more efficient, and readable Rust code.
+This lesson introduced some of Rust’s core concepts that make it unique in memory safety and concurrency. Key topics covered:
+- Understanding `mut` and how to work with mutable variables.
+- Exploring Rust’s ownership system and why it prevents memory issues.
+- Learning about **borrowing** and the difference between mutable and immutable references.
 
-This lesson strengthened my ability to structure programs effectively, setting the stage for more complex concepts ahead.
+
+Grasping these concepts is essential for writing safe and efficient Rust programs, and this lesson marked a significant step in mastering Rust’s memory model.
