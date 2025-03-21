@@ -1,18 +1,9 @@
-# My Education Projects in Rust
+# Lesson 2: Functions and Loop Mastery
 
-This repository documents my journey of learning Rust. Each lesson is stored in a separate branch, reflecting my progress and growing expertise.
+In this lesson, I deepened my understanding of Rust by exploring functions and refining my control flow skills. Key topics covered:
+- Writing and calling functions, understanding parameters and return values.
+- Improving logic with while loops.
+- Introducing for loops for more structured iteration.
+- Writing cleaner, more efficient, and readable Rust code.
 
-## 📌 University Course Progress
-
-As part of my university course, I’ll be sharing my path in Rust—from fundamental concepts to more advanced topics. 
-
-## Lesson 1: The Start of the Journey
-The first step into Rust development. In this lesson, I learned:
-- How to install Rust and set up Cargo.
-- The basics of Rust syntax.
-- Core control flow structures: `if`, `while`, and `loop`.
-- My first macros: `println!` and `format!`.
-- The fundamentals of variable creation and management.
-
-This is just the beginning—each lesson will deepen my understanding of Rust and its capabilities. 
-
+This lesson strengthened my ability to structure programs effectively, setting the stage for more complex concepts ahead.
