@@ -1,18 +1,9 @@
-# My Education Projects in Rust
+# Lesson 3: `mut`, Ownership, and Borrowing
 
-This repository documents my journey of learning Rust. Each lesson is stored in a separate branch, reflecting my progress and growing expertise.
+This lesson introduced some of Rust’s core concepts that make it unique in memory safety and concurrency. Key topics covered:
+- Understanding `mut` and how to work with mutable variables.
+- Exploring Rust’s ownership system and why it prevents memory issues.
+- Learning about **borrowing** and the difference between mutable and immutable references.
 
-## 📌 University Course Progress
 
-As part of my university course, I’ll be sharing my path in Rust—from fundamental concepts to more advanced topics. 
-
-## Lesson 1: The Start of the Journey
-The first step into Rust development. In this lesson, I learned:
-- How to install Rust and set up Cargo.
-- The basics of Rust syntax.
-- Core control flow structures: `if`, `while`, and `loop`.
-- My first macros: `println!` and `format!`.
-- The fundamentals of variable creation and management.
-
-This is just the beginning—each lesson will deepen my understanding of Rust and its capabilities. 
-
+Grasping these concepts is essential for writing safe and efficient Rust programs, and this lesson marked a significant step in mastering Rust’s memory model.
