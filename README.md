@@ -1,25 +1,12 @@
-# My Education Projects in Rust
+# Lesson 5: Error Handling in Rust
 
-This repository documents my journey of learning Rust. Each lesson is stored in a separate branch, reflecting my progress and growing expertise.
+## Overview
+In this lesson, we explored error handling in Rust, focusing on:
+- Utilizing `Option<T>` and `Result<T, E>` for safe and structured error management.
+- Applying the `?` operator to simplify error propagation and reduce boilerplate code.
+- Implementing functions that work with different numeral systems, including binary, octal, decimal, and Roman numerals.
 
-## 📌 University Course Progress
-
-As part of my university course, I’ll be sharing my path in Rust—from fundamental concepts to more advanced topics. 
-
-## Lesson 1: The Start of the Journey
-The first step into Rust development. In this lesson, I learned:
-- How to install Rust and set up Cargo.
-- The basics of Rust syntax.
-- Core control flow structures: `if`, `while`, and `loop`.
-- My first macros: `println!` and `format!`.
-- The fundamentals of variable creation and management.
-
-This is just the beginning—each lesson will deepen my understanding of Rust and its capabilities. 
-
-## 📚 Content
-
-[![Lesson 2](https://img.shields.io/badge/Lesson%202-Functions%20and%20Loops-blue?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_2)
-
-[![Lesson 3](https://img.shields.io/badge/Lesson%203-mut%2C%20Ownership%2C%20Borrowing-green?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_3)
-
-[![Lesson 4](https://img.shields.io/badge/Lesson%204-Strings%2C%20Iterators%2C%20Option%3CT%3E-orange?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_4)
+## Key Takeaways
+- ✔️ `Option<T>` **for handling optional values** – Ideal for cases where a function may return either a valid value or `None` (e.g., numeral system conversions).
+- ✔️ `Result<T, E>` **for explicit error handling** – Enables structured error messages when operations might fail (e.g., parsing numbers, invalid inputs).
+- ✔️ **The `?` operator for error propagation** – Streamlines error handling by automatically returning an error when a function fails inside another function.

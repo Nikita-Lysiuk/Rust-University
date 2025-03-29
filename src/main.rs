@@ -1,183 +1,176 @@
-
-// Zadanie 1
-fn is_leap_year(year: i32) -> bool {
-    if year % 4 == 0 || year % 400 == 0 && year % 100 != 0 {
-        return true;
+fn zamien_syst8_na_syst2(z: &str) -> Option<String> {
+    if z.len() == 0 {
+        None
     } else {
-        return false
+        let num = u32::from_str_radix(z, 8).ok()?;
+        
+        Some(format!("{:b}", num))
     }
 }
 
-// Zadanie 2
-fn days_amount(month: i32, year: i32) -> i32 {
-    if month < 1 || month > 12 {
-        return -1;
+fn wartosc_syst2(z: &str) -> Option<u8> {
+    if z.len() == 0 || z.len() > 8 {
+        return None;
     }
 
-    let days: [i32; 12] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
-    if month == 2 && is_leap_year(year) {
-        return 29;
+    let mut result: u8 = 0;
+    for (i, char) in z.chars().enumerate() {
+        let digit = char.to_digit(10)? as u8;
+        result += digit * (2u8.pow((z.len() - i - 1) as u32)) as u8;
     }
 
-    return days[(month - 1) as usize];
+    Some(result)
 }
 
-// Zadanie 3
-fn convert_to_f(c: f32) -> f32 {
-    return 32.0 + c * 9.0 / 5.0;
-}
+fn wartosc_syst8(z: &str) -> Option<u8> {
+    let binary = zamien_syst8_na_syst2(z);
 
-// Zadanie 4
-fn convert_to_c(f: f32) -> f32 {
-    return (f - 32.0) * 5.0 / 9.0;
-}
-
-// zadanie 5
-fn minus_time() {
-    let g1 = 7;
-    let m1 = 16;
-    let s1 = 50;
-
-    let g2 = 6;
-    let m2 = 59;
-    let s2 = 02;
-
-    let conv1 = g1 * 3600 + m1 * 60 + s1;
-    let conv2 = g2 * 3600 + m2 * 60 + s2;
-    let diff = conv1 - conv2;
-    println!("{}:{}:{}", diff / 3600, (diff % 3600) / 60, diff % 60);
-}
-
-//Zadanie 6
-fn factorial(n: u32) -> u32 {
-    let mut result: u32 = 1;
-    let mut i = 1;
-    while i != n {
-        result += i * result;
-        i += 1;
+    if binary.is_none() {
+        return None;
     }
 
-    return result;
+    let binary = binary.unwrap();
+    wartosc_syst2(&binary)
 }
 
-fn factorial_loop(n: u32) -> u32 {
-    let mut result: u32 = 1;
-    let mut i = 1;
-    loop {
-        if i == n {
-            break result;
+fn wartosc_syst8_with_question_mark(z: &str) -> Option<u8> {
+    let binary = zamien_syst8_na_syst2(z)?;
+    wartosc_syst2(&binary)
+}
+
+fn wartosc_cyfry(c: char) -> Result<u8, String> {
+    c.to_digit(10)
+        .ok_or(format!("'{c}' is not a digit"))
+        .map(|n| n as u8)
+}
+
+fn dodaj_pisemnie(a: &str, b: &str) -> Result<String, String> {
+    let a_vec = a.chars().rev().collect::<Vec<char>>();
+    let b_vec = b.chars().rev().collect::<Vec<char>>();
+
+    if a_vec.is_empty() || b_vec.is_empty() {
+        return Err("invalid data: some string is empty".to_string());
+    }
+
+    let mut carry: u8 = 0;
+
+    let max_size = a_vec.len().max(b_vec.len());
+
+    let mut result = String::new();
+
+    for i in 0..max_size {
+        let num1 = a_vec.get(i).unwrap_or(&'0');
+        let num2 = b_vec.get(i).unwrap_or(&'0');
+
+        let digit_1 = wartosc_cyfry(*num1)?;
+        let digit_2 = wartosc_cyfry(*num2)?;
+
+        let sum = digit_1 + digit_2 + carry;
+        carry = sum / 10;
+        result.push(char::from_digit(sum as u32 % 10, 10).unwrap());
+    }
+
+    if carry > 0 {
+        result.push(char::from_digit(carry as u32, 10).unwrap());
+    }
+
+    Ok(result.chars().rev().collect::<String>())
+}
+
+fn wartosc_cyfry_rzymskiej(c: char) -> Result<u16, String> {
+    match c {
+        'I' => return Ok(1),
+        'V' => return Ok(5),
+        'X' => return Ok(10),
+        'L' => return Ok(50),
+        'C' => return Ok(100),
+        'D' => return Ok(500),
+        'M' => return Ok(1000),
+        _ => return Err(format!("{c} is not a roman number"))
+    }
+}
+
+fn rzymskie(napis: &str) -> Result<u128, String> {
+    if napis.is_empty() {
+        return Err("String is empty".to_string());
+    }
+
+    let mut res: u128 = 0;
+    let mut i = 0;
+    let mut prev_value = 0;
+    let mut repeat_count = 0;
+    let mut last_char = None;
+
+    while i < napis.len() {
+        let current_char = napis.chars().nth(i).unwrap();
+        let s1 = wartosc_cyfry_rzymskiej(current_char)?;
+
+        if last_char == Some(current_char) && matches!(s1, 1 | 10 | 100 | 1000) {
+            repeat_count += 1;
+            if repeat_count > 3 {
+                return Err(format!("Wrong count of repeating: {} more than 3 times", current_char));
+            }
+        } else {
+            repeat_count = 1;
+            last_char = Some(current_char);
         }
 
-        result += i * result;
-        i += 1;
-    }
-}
+        if i + 1 < napis.len() {
+            let s2 = wartosc_cyfry_rzymskiej(napis.chars().nth(i + 1).unwrap())?;
 
-fn factorial_for(n: u32) -> u32 {
-    let mut result: u32 = 1;
-    for i in 1..n {
-        result += i * result;
-    }
-
-    result
-}
-
-//Zadanie 7
-fn show_digits(number: i32) {
-    let mut n = number;
-    while n > 0 {
-        print!("{} ", n % 10);
-        n /= 10;
-    }
-    println!();
-}
-
-//Zadanie 8
-fn sum_of_digits(number: i32) -> i32 {
-    let mut result = 0;
-    let mut n = number;
-
-    while n > 0 {
-        result += n % 10;
-        n  /= 10;
-    }
-
-    return result;
-}
-
-//Zadanie 9
-fn pythagorean_triples(number: i32) {
-    let mut a = 1;
-    while a <= number {
-        let mut b = a + 1;
-        while b <= number {
-            let mut c = b + 1;
-            while c * c < a * a + b * b {
-                c += 1;
-            }
-
-            if c * c == a * a + b * b && c <= number {
-                println!("({}, {}, {})", a, b, c);
-            }
-
-            b += 1;
-        }
-
-        a += 1;
-    }
-}
-
-fn pythagorean_triples_loop(number: i32) {
-    let mut a = 1;
-    loop {
-        if a > number {
-            break;
-        }
-
-        let mut b = a + 1;
-        loop {
-            if b > number {
-                break;
-            }
-
-            let mut c = b + 1;
-            loop {
-                if c > number {
-                    break;
+            if s1 >= s2 {
+                if s1 == s2 && matches!(s1, 5 | 50 | 500) {
+                    return Err(format!("Invalid repeating: {} cannot be repeat", current_char));
                 }
 
-                let c_square = a * a + b * b;
-
-                if c * c == c_square {
-                    println!("({}, {}, {})", a, b, c);
+                res += s1 as u128;
+                prev_value = s1;
+                i += 1;
+            } else {
+                if matches!(s1, 5 | 10 | 500) {
+                    return Err(format!("Invalid order: {} cannot be previous greater value", current_char));
                 }
 
-                c += 1;
+                let valid_subtraction = matches!(
+                    (s1, s2),
+                    (1, 5) | (1, 10) | (10, 50) | (10, 100) | (100, 500) | (100, 1000)
+                );
+
+                if !valid_subtraction {
+                    return Err(format!("Invalid substraction: {}{}", current_char, napis.chars().nth(i + 1).unwrap()));
+                }
+
+                let substraction = s2 - s1;
+                if substraction > prev_value && prev_value != 0 {
+                    return Err(format!("Invalid substraction: value after substraction greater than previous"));
+                }
+
+                res += substraction as u128;
+                prev_value = substraction;
+                i += 2;
             }
-
-            b += 1;
+        } else {
+            res += s1 as u128;
+            prev_value = s1;
+            i += 1;
         }
-
-        a += 1;
     }
+
+    Ok(res)
 }
 
 fn main() {
-    println!("{}", convert_to_f(30.0));
-    println!("{}", convert_to_c(86.0));
-    println!("{}", convert_to_f(1.0));
-    println!("{}", convert_to_f(30.0));
-    minus_time();
-    println!("{}", factorial(5));
-    println!("{}", factorial_loop(5));
-    println!("{}", factorial_for(5));
-    println!("{}", is_leap_year(2025));
-    println!("{}", days_amount(5, 2025));
-    show_digits(56789);
-    println!("{}", sum_of_digits(16));
-    pythagorean_triples(20);
-    println!("-----------------");
-    pythagorean_triples_loop(20);
+    println!("zamien_syst8_na_syst2 {:?}", zamien_syst8_na_syst2("72"));
+    println!("zamien_syst8_na_syst2 {:?}", zamien_syst8_na_syst2(""));
+    println!("zamien_syst8_na_syst2 {:?}", zamien_syst8_na_syst2("987"));
+
+    println!("wartosc_syst2 {:?}", wartosc_syst2("10000000"));
+
+    println!("wartosc_syst8 {:?}", wartosc_syst8("72"));
+    println!("wartosc_syst8 {:?}", wartosc_syst8_with_question_mark("72"));
+    println!("wartosc_cyfry {:?}", wartosc_cyfry('7'));
+
+    println!("dodaj_pisemnie {:?}", dodaj_pisemnie("25a", "998"));
+
+    println!("rzymskie {:?}", rzymskie("MCCX"));
 }
-    
