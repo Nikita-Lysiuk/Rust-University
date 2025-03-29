@@ -23,3 +23,6 @@ This is just the beginning—each lesson will deepen my understanding of Rust an
 [![Lesson 3](https://img.shields.io/badge/Lesson%203-mut%2C%20Ownership%2C%20Borrowing-green?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_3)
 
 [![Lesson 4](https://img.shields.io/badge/Lesson%204-Strings%2C%20Iterators%2C%20Option%3CT%3E-orange?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_4)
+
+[![Lesson 5](https://img.shields.io/badge/Lesson%205-Error%20Handling%20in%20Rust-brown?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_5)
+
