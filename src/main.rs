@@ -1,183 +1,159 @@
+// Zadanie 1.1
+fn show_eng_alp() {
+    let arr:Vec<_> = ('a'..='z').collect();
+    println!("Vector with iter {:?}", arr); 
 
-// Zadanie 1
-fn is_leap_year(year: i32) -> bool {
-    if year % 4 == 0 || year % 400 == 0 && year % 100 != 0 {
-        return true;
-    } else {
-        return false
-    }
-}
+    let mut arr:Vec<char> = Vec::new();
 
-// Zadanie 2
-fn days_amount(month: i32, year: i32) -> i32 {
-    if month < 1 || month > 12 {
-        return -1;
+    for ch in 'a'..='z' {
+        arr.push(ch);
     }
 
-    let days: [i32; 12] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    println!("Vector with for {:?}", arr);
+}
 
-    if month == 2 && is_leap_year(year) {
-        return 29;
+// Zadanie 1.2
+fn pow() {
+    let arr: Vec<_> = (1..=10).map(|x| x * x).collect();
+    println!("Vector with iter {:?}", arr); 
+
+    let mut arr: Vec<i32> = Vec::new();
+    for i in 1..=10 {
+        arr.push(i * i);
+    }
+    println!("Vector with for {:?}", arr);
+}
+
+// Zadanie 1.3
+fn pow_2() {
+    let arr: Vec<_> = (0..10).map(|x| 2_i32.pow(x)).collect();
+    println!("Vector with iter {:?}", arr);
+
+    let mut arr: Vec<i32> = Vec::new();
+    for i in 0..10 {
+        arr.push(2_i32.pow(i));
+    }
+    println!("Vector with for {:?}", arr);
+}
+
+// Zadanie 1.4
+fn inverses() {
+    let arr: Vec<_> = (1..=20).map(|x| 1.0 / x as f32).collect();
+    println!("Vector with iter {:?}", arr);
+
+    let mut arr: Vec<f32> = Vec::new();
+    for i in 1..=20 {
+        arr.push(1.0 / i as f32);
     }
 
-    return days[(month - 1) as usize];
+    println!("Vector with for {:?}", arr);
 }
 
-// Zadanie 3
-fn convert_to_f(c: f32) -> f32 {
-    return 32.0 + c * 9.0 / 5.0;
-}
+// Zadanie 1.5
+fn filter() {
+    let arr: Vec<_> = (1..=100).filter(|x| x % 3 == 0 && x % 4 != 0).collect();
+    println!("Vector with iter {:?}", arr);
 
-// Zadanie 4
-fn convert_to_c(f: f32) -> f32 {
-    return (f - 32.0) * 5.0 / 9.0;
-}
-
-// zadanie 5
-fn minus_time() {
-    let g1 = 7;
-    let m1 = 16;
-    let s1 = 50;
-
-    let g2 = 6;
-    let m2 = 59;
-    let s2 = 02;
-
-    let conv1 = g1 * 3600 + m1 * 60 + s1;
-    let conv2 = g2 * 3600 + m2 * 60 + s2;
-    let diff = conv1 - conv2;
-    println!("{}:{}:{}", diff / 3600, (diff % 3600) / 60, diff % 60);
-}
-
-//Zadanie 6
-fn factorial(n: u32) -> u32 {
-    let mut result: u32 = 1;
-    let mut i = 1;
-    while i != n {
-        result += i * result;
-        i += 1;
-    }
-
-    return result;
-}
-
-fn factorial_loop(n: u32) -> u32 {
-    let mut result: u32 = 1;
-    let mut i = 1;
-    loop {
-        if i == n {
-            break result;
+    let mut arr: Vec<i32> = Vec::new();
+    for i in 1..=100 {
+        if i % 3 == 0 && i % 4 != 0 {
+            arr.push(i);
         }
-
-        result += i * result;
-        i += 1;
     }
+    println!("Vector with for {:?}", arr);
 }
 
-fn factorial_for(n: u32) -> u32 {
-    let mut result: u32 = 1;
-    for i in 1..n {
-        result += i * result;
-    }
-
-    result
+// Zadanie 2.1
+fn short_string(arr: &Vec<String>) -> Vec<&String> {
+    arr.iter().filter(|st| st.len() < 4).collect()
 }
 
-//Zadanie 7
-fn show_digits(number: i32) {
-    let mut n = number;
-    while n > 0 {
-        print!("{} ", n % 10);
-        n /= 10;
-    }
-    println!();
+// Zadanie 2.2 
+fn without_a (arr: &Vec<String>) -> Vec<&String> {
+    arr.iter()
+        .filter(|st| !st.chars().any(|c| c.to_ascii_lowercase() == 'a'))
+        .collect()
 }
 
-//Zadanie 8
-fn sum_of_digits(number: i32) -> i32 {
-    let mut result = 0;
-    let mut n = number;
-
-    while n > 0 {
-        result += n % 10;
-        n  /= 10;
-    }
-
-    return result;
+// Zadanie 2.3
+fn with_num (arr: &Vec<String>) -> Vec<&String> {
+    arr.iter()
+        .filter(|st| st.chars().any(|c| c.is_digit(10)))
+        .collect()
 }
 
-//Zadanie 9
-fn pythagorean_triples(number: i32) {
-    let mut a = 1;
-    while a <= number {
-        let mut b = a + 1;
-        while b <= number {
-            let mut c = b + 1;
-            while c * c < a * a + b * b {
-                c += 1;
+// Zadanie 2.4
+fn rev_string (arr: &Vec<String>) -> Vec<String> {
+    arr.iter()
+        .map(|st| st.chars().rev().collect())
+        .collect() 
+}
+
+// Zadanie 2.5
+fn double_char (arr: &Vec<String>) -> Vec<&String> {
+    arr.iter()
+        .filter(|st| {
+            st.chars()
+                .collect::<Vec<_>>()
+                .windows(2)
+                .any(|pair| pair[0] == pair[1])
+        })  
+        .collect()
+}
+
+fn indeksy(tablica: &Vec<String>, element: &str) -> Vec<usize> {
+    tablica.iter()
+        .enumerate()
+        .filter(|(_i, e)| {
+            if e.len() != element.len() { return false; }
+
+            for j in 0..e.len() {
+                if e.chars().nth(j) != element.chars().nth(j) { return false; }
             }
 
-            if c * c == a * a + b * b && c <= number {
-                println!("({}, {}, {})", a, b, c);
-            }
-
-            b += 1;
-        }
-
-        a += 1;
-    }
+            return true;
+        })
+        .map(|(i, _e)| i)
+        .collect()
 }
 
-fn pythagorean_triples_loop(number: i32) {
-    let mut a = 1;
-    loop {
-        if a > number {
-            break;
-        }
-
-        let mut b = a + 1;
-        loop {
-            if b > number {
-                break;
-            }
-
-            let mut c = b + 1;
-            loop {
-                if c > number {
-                    break;
-                }
-
-                let c_square = a * a + b * b;
-
-                if c * c == c_square {
-                    println!("({}, {}, {})", a, b, c);
-                }
-
-                c += 1;
-            }
-
-            b += 1;
-        }
-
-        a += 1;
-    }
+fn better_indeksy(tablica: &Vec<String>, element: &str) -> Vec<usize> {
+    tablica.iter()
+        .enumerate()
+        .filter_map(|
+            (i, el)| 
+            if el.len() == element.len() && el.chars().zip(element.chars()).all(|(c1, c2)| c1 == c2) {
+                Some(i)
+            } else {
+                None
+            })
+        .collect()
 }
 
 fn main() {
-    println!("{}", convert_to_f(30.0));
-    println!("{}", convert_to_c(86.0));
-    println!("{}", convert_to_f(1.0));
-    println!("{}", convert_to_f(30.0));
-    minus_time();
-    println!("{}", factorial(5));
-    println!("{}", factorial_loop(5));
-    println!("{}", factorial_for(5));
-    println!("{}", is_leap_year(2025));
-    println!("{}", days_amount(5, 2025));
-    show_digits(56789);
-    println!("{}", sum_of_digits(16));
-    pythagorean_triples(20);
-    println!("-----------------");
-    pythagorean_triples_loop(20);
+    show_eng_alp();
+    pow();
+    pow_2();
+    inverses();
+    filter();
+
+    let arr = vec![
+        String::from("Rust"),
+        String::from("is"),
+        String::from("awe5some"),
+        String::from("and"),
+        String::from("fast"),
+        String::from("language 45"),
+        String::from("inne"),
+        String::from("is"),
+    ];
+
+    println!("short_string: {:?}", short_string(&arr));
+    println!("without a: {:?}", without_a(&arr));
+    println!("with numbers: {:?}", with_num(&arr));
+    println!("reverse string: {:?}", rev_string(&arr));
+    println!("double char: {:?}", double_char(&arr));
+
+    println!("iters: {:?}", indeksy(&arr, &"is"));
+    println!("better_indeksy: {:?}", better_indeksy(&arr, &"is"));
 }
-    
