@@ -16,6 +16,8 @@ The first step into Rust development. In this lesson, I learned:
 
 This is just the beginning—each lesson will deepen my understanding of Rust and its capabilities. 
 
+
+
 ## 📚 Content
 
 [![Lesson 2](https://img.shields.io/badge/Lesson%202-Functions%20and%20Loops-blue?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_2)
