@@ -1,31 +1,44 @@
-# My Education Projects in Rust
+## Lesson 7: Structs, Traits, and Type Implementations
 
-This repository documents my journey of learning Rust. Each lesson is stored in a separate branch, reflecting my progress and growing expertise.
+In this lesson, I learned how to define and implement custom data types in Rust using `struct`, `impl`, and traits. I also explored how to automatically derive common traits using `#[derive(...)]`, and understood the difference between independent and dependent traits.
 
-## 📌 University Course Progress
+### Key Topics:
 
-As part of my university course, I’ll be sharing my path in Rust—from fundamental concepts to more advanced topics. 
+- **Structs:**
+  - Creating custom data types with named fields.
+  - Examples: `Rgb`, `Macierz`.
 
-## Lesson 1: The Start of the Journey
-The first step into Rust development. In this lesson, I learned:
-- How to install Rust and set up Cargo.
-- The basics of Rust syntax.
-- Core control flow structures: `if`, `while`, and `loop`.
-- My first macros: `println!` and `format!`.
-- The fundamentals of variable creation and management.
+- **Traits and `#[derive(...)]`:**
+  - Independently derivable traits: `Debug`, `Clone`, `PartialEq`, `Default`, `Hash`.
+  - Dependent traits:  
+    - `Eq` (requires `PartialEq`)  
+    - `Ord` (requires `PartialOrd` + `Eq`)  
+    - `Copy` (requires `Clone`)
 
-This is just the beginning—each lesson will deepen my understanding of Rust and its capabilities. 
+- **`impl` Blocks:**
+  - Adding methods to types with `impl`.
+  - Usage of `self`, `&self`, `&mut self`, `Self`.
+  - Factory methods like `Rgb::white()`, `Rgb::gray()`, and utility methods like `invert()` and `intensity()`.
 
+- **Practical Implementations:**
+  - **`Rgb` color struct:**
+    - Multiple constructors: from 0–255 or percent ranges.
+    - Conversion to CMY.
+    - Inversion and intensity calculation.
+  - **`Macierz` (Matrix) struct:**
+    - Custom matrix constructor with fill value.
+    - Zero and unit matrix factories.
+    - Manual implementation of `PartialEq` for dimension comparison.
+    - Element access and matrix addition with validation.
 
+### Exercises Included:
 
-## 📚 Content
+- Implemented a complete `Rgb` struct with multiple constructors and utilities.
+- Built a `Macierz` matrix struct with logic for construction, comparison, addition, and value mutation.
+- Practiced handling `Option`, trait derivation, and trait bounds.
 
-[![Lesson 2](https://img.shields.io/badge/Lesson%202-Functions%20and%20Loops-blue?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_2)
+---
 
-[![Lesson 3](https://img.shields.io/badge/Lesson%203-mut%2C%20Ownership%2C%20Borrowing-green?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_3)
+### Conclusion:
 
-[![Lesson 4](https://img.shields.io/badge/Lesson%204-Strings%2C%20Iterators%2C%20Option%3CT%3E-orange?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_4)
-
-[![Lesson 5](https://img.shields.io/badge/Lesson%205-Error%20Handling%20in%20Rust-brown?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_5)
-
-[![Lesson 6](https://img.shields.io/badge/Lesson%206-Advanced%20Iterators%20and%20Functional%20Programming-purple?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_6)
+This lesson solidified my understanding of **structural programming in Rust**. I learned how to encapsulate data with associated logic, leverage traits for extended behavior, and build clean, idiomatic APIs. These skills are foundational for writing scalable and expressive Rust code in future modules.
