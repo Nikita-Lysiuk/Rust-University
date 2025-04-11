@@ -27,3 +27,5 @@ This is just the beginning—each lesson will deepen my understanding of Rust an
 [![Lesson 5](https://img.shields.io/badge/Lesson%205-Error%20Handling%20in%20Rust-brown?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_5)
 
 [![Lesson 6](https://img.shields.io/badge/Lesson%206-Advanced%20Iterators%20and%20Functional%20Programming-purple?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_6)
+
+[![Lesson 7](https://img.shields.io/badge/Lesson%207-Structs,%20Traits,%20and%20Type%20Implementations-pink?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_7)
