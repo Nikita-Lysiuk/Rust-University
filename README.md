@@ -1,44 +1,70 @@
-## Lesson 7: Structs, Traits, and Type Implementations
+## Lesson 8: Enums as Safe Unions and Pattern Matching in Rust
 
-In this lesson, I learned how to define and implement custom data types in Rust using `struct`, `impl`, and traits. I also explored how to automatically derive common traits using `#[derive(...)]`, and understood the difference between independent and dependent traits.
+In this lesson, I learned how Rust's `enum` provides a safe, powerful alternative to traditional `union` types found in C and C++. We discussed the dangers of C++-style unions, and how Rust enforces memory and type safety by tagging each variant. I also explored advanced control flow with `match`, `if let`, and `while let` for clean, concise, and expressive code.
 
 ### Key Topics:
 
-- **Structs:**
-  - Creating custom data types with named fields.
-  - Examples: `Rgb`, `Macierz`.
+- **Unions in C++ vs Enums in Rust:**
+  - C++ `union` allows multiple data representations in the same memory space, but without type safety.
+  - Rust's `enum` acts as a **tagged union**, tracking the active variant and preventing undefined behavior.
+  - Each variant can hold different types and be safely matched at runtime.
 
-- **Traits and `#[derive(...)]`:**
-  - Independently derivable traits: `Debug`, `Clone`, `PartialEq`, `Default`, `Hash`.
-  - Dependent traits:  
-    - `Eq` (requires `PartialEq`)  
-    - `Ord` (requires `PartialOrd` + `Eq`)  
-    - `Copy` (requires `Clone`)
+- **Enum Syntax and Use Cases:**
+  - Defining and instantiating custom enums.
+  - Using `enum` to model state and encapsulate different behaviors or data (e.g. `Jednostka`, `Count`).
+  - Example:
+    ```rust
+    enum Jednostka {
+        Kilogram,
+        Gram,
+        Sztuka,
+    }
 
-- **`impl` Blocks:**
-  - Adding methods to types with `impl`.
-  - Usage of `self`, `&self`, `&mut self`, `Self`.
-  - Factory methods like `Rgb::white()`, `Rgb::gray()`, and utility methods like `invert()` and `intensity()`.
+    enum Count {
+        LiczbaCalkowita(i32),
+        LiczbaRzeczywista(f32),
+    }
+    ```
 
-- **Practical Implementations:**
-  - **`Rgb` color struct:**
-    - Multiple constructors: from 0–255 or percent ranges.
-    - Conversion to CMY.
-    - Inversion and intensity calculation.
-  - **`Macierz` (Matrix) struct:**
-    - Custom matrix constructor with fill value.
-    - Zero and unit matrix factories.
-    - Manual implementation of `PartialEq` for dimension comparison.
-    - Element access and matrix addition with validation.
+- **Pattern Matching with `match`:**
+  - Exhaustive and expressive control flow tool.
+  - Ensures all variants are covered.
+  - Ability to destructure and bind values within arms.
+  - Example:
+    ```rust
+    match count {
+        Count::LiczbaCalkowita(x) => println!("Integer: {}", x),
+        Count::LiczbaRzeczywista(f) => println!("Float: {}", f),
+    }
+    ```
+
+- **Simplified Matching with `if let`:**
+  - Cleaner syntax when matching a single variant.
+  - Useful when you only care about one case:
+    ```rust
+    if let Count::LiczbaCalkowita(x) = count {
+        println!("Just the integer: {}", x);
+    }
+    ```
+
+- **Pattern Matching in Loops (`while let`):**
+  - Great for iterating over `Option` or `Result` until a condition is met.
+  - Example:
+    ```rust
+    while let Some(x) = maybe_number.pop() {
+        println!("Popped: {}", x);
+    }
+    ```
 
 ### Exercises Included:
 
-- Implemented a complete `Rgb` struct with multiple constructors and utilities.
-- Built a `Macierz` matrix struct with logic for construction, comparison, addition, and value mutation.
-- Practiced handling `Option`, trait derivation, and trait bounds.
+- Defined multiple `enum` types modeling real-world states and units.
+- Replaced traditional unions with safe enums for strong typing.
+- Implemented logic using `match` and `if let` to cleanly extract and handle values.
+- Wrote pattern-matching control flows that ensured exhaustive handling of cases.
 
 ---
 
 ### Conclusion:
 
-This lesson solidified my understanding of **structural programming in Rust**. I learned how to encapsulate data with associated logic, leverage traits for extended behavior, and build clean, idiomatic APIs. These skills are foundational for writing scalable and expressive Rust code in future modules.
+This lesson deepened my understanding of **enums as safe union alternatives** and showed me how to **write powerful, expressive control flow in Rust**. I now see enums not just as variants but as a core tool for building safe, state-driven logic with zero undefined behavior — a concept that’s miles ahead of traditional C++-style unions.

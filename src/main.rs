@@ -1,192 +1,303 @@
-#[derive(Debug, PartialEq, Clone)]
-struct Rgb {
-    red: u8,
-    green: u8,
-    blue: u8,
+struct RandGen {
+    seed: i64,
 }
 
-impl Rgb {
-    fn from_3u8(red: u8, green: u8, blue: u8) -> Self {
-        Self { red, green, blue }
+impl RandGen {
+    fn new(seed: i64) -> Self {
+        Self { seed }
     }
 
-    fn from_3percent(red: f32, green: f32, blue: f32) -> Option<Self> {
-        if red < 0.0 || red > 100.0 ||
-            green < 0.0 || green > 100.0 ||
-            blue < 0.0 || blue > 100.0 {
-                None
-            } else {
-                Some(Self {
-                    red: (red * 2.55) as u8,
-                    green: (green * 2.55) as u8,
-                    blue: (blue * 2.55) as u8,
-                })
-            }
+    fn gen_range(&self, from: i64, to: i64) -> i64 {
+        let a = 75;
+        let c = 0;
+        let m = 2_i64.pow(16) + 1;
+        let seed = (a * self.seed + c) % m;
+        seed % (to - from + 1) + from
+    }
+}
+
+struct Urna {
+    znaki: Vec<char>,
+    rand_gen: RandGen,
+}
+
+impl Urna {
+    fn new(rand_gen: RandGen) -> Self {
+        let znaki: Vec<char> = Vec::new();
+        Self { znaki, rand_gen }
     }
 
-    fn gray(value: f32) -> Option<Self> {
-        if value < 0.0 || value > 100.0 {
+    fn losuj_bez_us(&self) -> Option<char> {
+        if self.znaki.is_empty() {
+            return None;
+        }
+
+        let n = self.rand_gen.gen_range(0, self.znaki.len() as i64 - 1) as usize;
+
+        let znak = self.znaki.iter().nth(n);
+
+        if let Some(z) = znak {
+            Some(*z)
+        } else {
+            None
+        }
+    }
+
+    fn losuj_z_us(&mut self) -> Option<char> {
+        if self.znaki.is_empty() {
             None
         } else {
-            Some(Self {
-                red: (value * 2.55) as u8,
-                green: (value * 2.55) as u8,
-                blue: (value * 2.55) as u8,
-            })
+            let n = self.rand_gen.gen_range(0, self.znaki.len() as i64 - 1) as usize;
+
+            Some(self.znaki.swap_remove(n))
         }
     }
 
-    fn white() -> Self {
-        Self {
-            red:255, 
-            green:255, 
-            blue:255
-        }
+    fn doloz(&mut self, znak: char) {
+        self.znaki.push(znak);
     }
 
-    fn black() -> Self {
-        Self {
-            red:0,
-            green: 0,
-            blue: 0,
-        }
-    }
-
-    fn invert(&mut self) {
-        self.red = 255 - self.red;
-        self.green = 255 - self.green;
-        self.blue = 255 - self.blue;
-    }
-
-    fn intensity(&self) -> f32 {
-        (self.red as f32 + self.green as f32 + self.blue as f32) / (3.0 * 255.0)
-    }
-
-    fn as_rgb_u8tuple(&self) -> (u8, u8, u8) {
-        (self.red, self.green, self.blue)
-    }
-
-    fn as_cmy_u8tuple(&self) -> (u8, u8, u8) {
-        let mut tmp = self.clone();
-        tmp.invert();
-        (tmp.red, tmp.green, tmp.blue)
+    fn rozmiar(&self) -> usize {
+        self.znaki.len()
     }
 }
 
-struct Macierz {
-    mat: Vec<Vec<f64>>,
-    cols: usize,
-    rows: usize,
+#[derive(PartialEq, Clone)]
+enum Jednostka {
+    Sztuki,
+    Litry,
+    Kilogram,
 }
 
-impl PartialEq for Macierz  {
-    fn eq(&self, other: &Self) -> bool {
-        self.rows == other.rows && self.cols == other.cols
-    }
+#[derive(PartialEq, Clone)]
+enum WarunkiPrzechowywania {
+    Zamrazarka,
+    Chlodziarka,
+    Normalne,
+}
 
-    fn ne(&self, other: &Self) -> bool {
-        !self.eq(other)
+#[derive(PartialEq, Clone)]
+struct Towar {
+    nazwa: String,
+    jednostka: Jednostka,
+    waga: f64,
+    warunki: WarunkiPrzechowywania,
+}
+
+impl Towar {
+    fn new(nazwa: String, jednostka: Jednostka, waga: f64, warunki: WarunkiPrzechowywania) -> Self {
+        if waga <= 0.0 {
+            panic!("Waga musi być dodatnia!");
+        }
+
+        match jednostka {
+            Jednostka::Kilogram => Self {
+                nazwa,
+                jednostka,
+                waga: 1.0,
+                warunki,
+            },
+            _ => Self {
+                nazwa,
+                jednostka,
+                waga,
+                warunki,
+            },
+        }
     }
 }
 
-impl Macierz {
-    fn new(wysokość: usize, szerokość: usize, wypełniacz: f64) -> Self {
-        Self {
-            mat: vec![vec![wypełniacz; szerokość]; wysokość],
-            cols: szerokość,
-            rows: wysokość,
+enum Count {
+    LiczbaCalkowita(i32),
+    LiczbaWymierna(f64),
+}
+
+impl Count {
+    fn increase_count(&mut self, ilosc: f64) {
+        match self {
+            Count::LiczbaCalkowita(n) => *n += ilosc as i32,
+            Count::LiczbaWymierna(n) => *n += ilosc,
         }
     }
 
-    fn zerowa(wysokość: usize, szerokość: usize) -> Self {
-        Self {
-            mat: vec![vec![0.0; szerokość]; wysokość],
-            cols: szerokość,
-            rows: wysokość,
+    fn as_f64(&self) -> f64 {
+        match self {
+            Count::LiczbaCalkowita(n) => *n as f64,
+            Count::LiczbaWymierna(n) => *n,
         }
     }
+}
 
-    fn jednostkowa(wysokość: usize) -> Self {
-        Self {
-            mat: vec![vec![0.0; 1]; wysokość],
-            cols: 1,
-            rows: wysokość,
+struct Zamowienie {
+    towary: Vec<(Towar, Count)>,
+}
+
+impl Zamowienie {
+    fn new() -> Self {
+        Self { towary: Vec::new() }
+    }
+
+    fn weight(&self) -> f64 {
+        self.towary
+            .iter()
+            .fold(0.0, |acc, (towar, count)| acc + towar.waga * count.as_f64())
+    }
+
+    fn weight_with_store_type(&self, warunki: WarunkiPrzechowywania) -> f64 {
+        self.towary
+            .iter()
+            .filter(|(towar, _)| towar.warunki == warunki)
+            .fold(0.0, |acc, (towar, count)| acc + towar.waga * count.as_f64())
+    }
+
+    fn add_item(&mut self, towar: Towar, ilosc: f64) {
+        if ilosc <= 0.0 {
+            panic!("Ilość musi być dodatnia")
         }
-    }
 
-    fn element(&self, indeks_wiersz: usize, indeks_kolumn: usize) -> f64 {
-        *self.mat.get(indeks_wiersz).unwrap().get(indeks_kolumn).unwrap()
-    }
+        if let Jednostka::Sztuki = towar.jednostka {
+            if ilosc.fract() != 0.0 {
+                panic!("Ilość dla jednostki 'Sztuki' musi być liczbą całkowitą");
+            }
+        }
 
-    fn zmien_element(&mut self, indeks_wiersz: usize, indeks_kolumn: usize, nowa_wartość: f64) {
-        self.mat[indeks_wiersz][indeks_kolumn] = nowa_wartość;
-    }
+        let item = self
+            .towary
+            .iter_mut()
+            .find(|(towar_in_order, _)| *towar_in_order == towar);
 
-    fn suma(macierz1: Macierz, macierz2: Macierz) -> Option<Self> {
-        if macierz1 != macierz2 {
-            None
+        if item.is_none() {
+            match towar.jednostka {
+                Jednostka::Sztuki => self
+                    .towary
+                    .push((towar, Count::LiczbaCalkowita(ilosc as i32))),
+                _ => self.towary.push((towar, Count::LiczbaWymierna(ilosc))),
+            }
         } else {
-            let rows = macierz1.rows;
-            let cols = macierz2.cols;
-            let mut res = Macierz::zerowa(rows, cols);
-
-            for i in 0..rows {
-                for j in 0..cols {
-                    let sum = macierz1.element(i, j) + macierz2.element(i, j);
-                    res.zmien_element(i, j, sum);
-                }
-            }
-
-            Some(res)
-        }
-    }
-
-    fn wyświetl(&self) {
-        for i in 0..self.rows {
-            for j in 0..self.cols {
-                print!("{} ", self.element(i, j));
-            }
-            println!("");
+            item.unwrap().1.increase_count(ilosc);
         }
     }
 }
+
+//fn main() {
+// let mut generator1 = RandGen::new(123);
+// let a = generator1.gen_range(3, 15);
+// let b = generator1.gen_range(3, 15);
+// let c = generator1.gen_range(3, 15);
+
+// let mut generator2 = RandGen::new(123);
+// let a2 = generator2.gen_range(3, 15);
+// let b2 = generator2.gen_range(3, 15);
+// let c2 = generator2.gen_range(3, 15);
+
+// println!("{}", a == a2);
+// println!("{}", b == b2);
+// println!("{}", c == c2);
+
+// println!("{}", a >= 3);
+// println!("{}", b >= 3);
+// println!("{}", c >= 3);
+
+// println!("{}", a <= 15);
+// println!("{}", b <= 15);
+// println!("{}", c <= 15);
+
+// let mut urna = Urna::new(RandGen::new(123));
+
+// let a: Option<char> = urna.losuj_z_us();
+// println!("{:?}", a.is_none());
+// let a: Option<char> = urna.losuj_bez_us();
+// println!("{:?}", a.is_none());
+
+// urna.doloz('a');
+// urna.doloz('b');
+// urna.doloz('c');
+// urna.doloz('d');
+
+// println!("{:?}", urna.rozmiar() == 4);
+// let y: Option<char> = urna.losuj_z_us();
+// println!("{:?}", y.is_some());
+// println!("{:?}", urna.rozmiar() == 3);
+// let x: Option<char> = urna.losuj_bez_us();
+// println!("{:?}", x.is_some());
+// println!("{:?}", urna.rozmiar() == 3);
+// println!("{:?}", x != y);
+// urna.losuj_z_us();
+// println!("{:?}", urna.rozmiar() == 2);
+// urna.losuj_z_us();
+// println!("{:?}", urna.rozmiar() == 1);
+// urna.losuj_z_us();
+// println!("{:?}", urna.rozmiar() == 0);
+// let z: Option<char> = urna.losuj_z_us();
+// println!("{:?}", z.is_none());
+// println!("{:?}", urna.rozmiar() == 0);
+
+//     let towar1 = Towar::new(
+//         "Mleko".to_string(),
+//         Jednostka::Litry,
+//         2.0,
+//         WarunkiPrzechowywania::Chlodziarka,
+//     );
+
+//     let towar2 = Towar::new(
+//         "Cukier".to_string(),
+//         Jednostka::Kilogram,
+//         1.0,
+//         WarunkiPrzechowywania::Normalne,
+//     );
+
+//     let zamowienie = Zamowienie {
+//         towary: vec![
+//             (towar1, Count::LiczbaWymierna(5.0)),
+//             (towar2, Count::LiczbaWymierna(7.0)),
+//         ],
+//     };
+
+//     let waga_chlodziarka = zamowienie.weight_with_store_type(WarunkiPrzechowywania::Chlodziarka);
+//     let waga_normalne = zamowienie.weight_with_store_type(WarunkiPrzechowywania::Normalne);
+
+//     println!("Waga dla chłodziarki: {}", waga_chlodziarka); // 6.0
+//     println!("Waga dla normalnych warunków: {}", waga_normalne); // 5.0
+//     println!("Waga dla wszystkich: {}", zamowienie.weight());
+// }
 
 fn main() {
-    let szary1 = Rgb::from_3u8(127, 127, 127);
-    let szary2 = Rgb::from_3percent(50.0, 50.0, 50.0).unwrap();
-    let szary3 = Rgb::gray(50.0).unwrap();
-    let fiolet = Rgb::from_3u8(100, 35, 120);
-    let bialy1 = Rgb::white();
-    let bialy2 = Rgb::from_3u8(255, 255, 255);
-    let mut czarny1 = Rgb::black();
-    let czarny2 = Rgb::from_3u8(0, 0, 0);
-    println!("{} {}", szary1 == szary2, szary1 == szary3);
-    println!("{} {}", bialy1 == bialy2, czarny1 == czarny2);
-    czarny1.invert();
-    println!("{}", bialy1 == czarny1);
-    println!("{}", fiolet.intensity() == 1.0 / 3.0);
-    println!("{}", fiolet.as_rgb_u8tuple() == (100, 35, 120));
-    println!("{}", fiolet.as_cmy_u8tuple() == (155, 220, 135));
+    use Jednostka::*;
+    use WarunkiPrzechowywania::*;
 
+    let mut zamowienie = Zamowienie::new();
 
-    // Macierz
-    let mat1 = Macierz::new(3, 3, 12.56);
-    let mut mat2 = Macierz::zerowa(10, 7);
-    let mat3 = Macierz::jednostkowa(8);
+    let towar1 = Towar::new("Mleko".to_string(), Litry, 1.0, Chlodziarka);
+    let towar2 = Towar::new("Lód".to_string(), Kilogram, 5.0, Zamrazarka);
+    let towar3 = Towar::new("Jabłko".to_string(), Sztuki, 0.2, Normalne);
 
-    mat3.wyświetl();
+    // Додавання товарів
+    zamowienie.add_item(towar1.clone(), 2.5); // 2.5 * 1.0
+    zamowienie.add_item(towar2.clone(), 3.0); // 3.0 * 1.0 (waga wymuszana)
+    zamowienie.add_item(towar3.clone(), 5.0); // 5 szt * 0.2
 
-    println!("element of mat2: {}", mat2.element(7, 3));
-    mat2.zmien_element(7, 3, 56.72);
-    println!("element of mat2: {}", mat2.element(7, 3));
+    // Перевірка сумарної ваги
+    println!("Całkowita waga: {}", zamowienie.weight()); // Очікується: 2.5 + 3.0*1 + 5*0.2 = 2.5 + 3 + 1 = 6.5
 
-    let mat4 = Macierz::new(3, 3, 7.44);
-    let mat_sum = Macierz::suma(mat1, mat4);
+    // Перевірка по категорії зберігання
+    println!(
+        "Waga (Zamrażarka): {}",
+        zamowienie.weight_with_store_type(Zamrazarka)
+    ); // 3.0
+    println!(
+        "Waga (Chłodziarka): {}",
+        zamowienie.weight_with_store_type(Chlodziarka)
+    ); // 2.5
+    println!(
+        "Waga (Normalne): {}",
+        zamowienie.weight_with_store_type(Normalne)
+    ); // 1.0
 
-    if mat_sum.is_some() {
-        mat_sum.unwrap().wyświetl();
-    } else {
-        println!("mat_sum error");
-    }
+    // Перевірка збільшення кількості існуючого товару
+    zamowienie.add_item(towar1.clone(), 0.5); // додати ще 0.5 л молока
+    println!("Waga po dodaniu mleka: {}", zamowienie.weight()); // +0.5*1.0 = 7.0
+
+    // Некоректне додавання
+    //zamowienie.add_item(towar3.clone(), -3.0); // панікує
+    // zamowienie.add_item(towar3.clone(), 1.5); // панікує, бо sztuki -> неціле
 }
-    
