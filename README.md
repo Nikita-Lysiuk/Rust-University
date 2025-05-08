@@ -33,3 +33,5 @@ This is just the beginning—each lesson will deepen my understanding of Rust an
 [![Lesson 7](https://img.shields.io/badge/Lesson%207-Structs,%20Traits,%20and%20Type%20Implementations-pink?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_7)
 
 [![Lesson 8](https://img.shields.io/badge/Lesson%208-Enums%20as%20Safe%20Unions%20and%20Pattern%20Matching%20in%20Rust-yellow?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_8)
+
+[![Lesson 9](https://img.shields.io/badge/Lesson%209-%20Default%20Traits%20in%20Rust-red?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_9)
