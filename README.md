@@ -1,35 +1,50 @@
-# My Education Projects in Rust
+Lesson 9: Overriding Default Traits in Rust
 
-This repository documents my journey of learning Rust. Each lesson is stored in a separate branch, reflecting my progress and growing expertise.
+In this lesson, I explored how Rust allows us to implement and override default traits like `PartialEq`, `PartialOrd`, `Debug`, and others to give custom behavior to our types. Instead of relying on derived implementations, I learned to take full control over how comparison, ordering, and formatting is handled — crucial for game development and engine-level abstractions.
 
-## 📌 University Course Progress
+Key Topics:
 
-As part of my university course, I’ll be sharing my path in Rust—from fundamental concepts to more advanced topics. 
+Why Override Traits:
+- Derive works for many types, but sometimes you need logic-specific comparisons (e.g., animation event time + priority).
+- Traits like `PartialEq` and `PartialOrd` let you define custom equality and sorting.
+- Enables expressive APIs and proper behavior in sorted containers or match expressions.
 
-## Lesson 1: The Start of the Journey
-The first step into Rust development. In this lesson, I learned:
-- How to install Rust and set up Cargo.
-- The basics of Rust syntax.
-- Core control flow structures: `if`, `while`, and `loop`.
-- My first macros: `println!` and `format!`.
-- The fundamentals of variable creation and management.
+PartialEq:
+- Defines equality comparison `==`.
+- Must return a boolean representing logical equality of two values.
+Example:
+```rust
+impl PartialEq for AnimationEvent {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name &&
+        self.time == other.time &&
+        self.importance as u8 == other.importance as u8
+    }
+}
+```
 
-This is just the beginning—each lesson will deepen my understanding of Rust and its capabilities. 
+PartialOrd:
 
+- Enables <, >, <=, >= comparisons.
 
+- Should return Some(Ordering) or None for incomparable cases.
 
-## 📚 Content
+- You can chain logic with then_with for multi-field comparison.
 
-[![Lesson 2](https://img.shields.io/badge/Lesson%202-Functions%20and%20Loops-blue?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_2)
+Example:
 
-[![Lesson 3](https://img.shields.io/badge/Lesson%203-mut%2C%20Ownership%2C%20Borrowing-green?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_3)
+```rust 
+impl PartialOrd for AnimationEvent {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(
+            self.time
+                .partial_cmp(&other.time)?
+                .then_with(|| (self.importance as u8).cmp(&(other.importance as u8)))
+                .then_with(|| self.name.cmp(&other.name))
+        )
+    }
+}
+```
 
-[![Lesson 4](https://img.shields.io/badge/Lesson%204-Strings%2C%20Iterators%2C%20Option%3CT%3E-orange?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_4)
-
-[![Lesson 5](https://img.shields.io/badge/Lesson%205-Error%20Handling%20in%20Rust-brown?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_5)
-
-[![Lesson 6](https://img.shields.io/badge/Lesson%206-Advanced%20Iterators%20and%20Functional%20Programming-purple?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_6)
-
-[![Lesson 7](https://img.shields.io/badge/Lesson%207-Structs,%20Traits,%20and%20Type%20Implementations-pink?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_7)
-
-[![Lesson 8](https://img.shields.io/badge/Lesson%208-Enums%20as%20Safe%20Unions%20and%20Pattern%20Matching%20in%20Rust-yellow?style=for-the-badge)](https://github.com/Nikita-Lysiuk/Rust-University/tree/lesson_8)
+Conclusion:
+This lesson helped me understand how Rust’s trait system allows fine-grained control over behavior that is often hardcoded in other languages. By overriding default trait logic, I can ensure my types behave exactly as they should — whether they're used in gameplay systems, simulations, or ECS sorting. These skills are foundational for writing robust and expressive systems in modern game engines.
